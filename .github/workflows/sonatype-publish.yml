@@ -1,0 +1,35 @@
+# This workflow will publish a Java project with Maven to Sonatype Nexus Repository Manager
+# For more information see: https://docs.github.com/en/actions/guides/publishing-java-packages-with-maven#publishing-packages-to-the-maven-central-repository
+
+name: Publish exp4j with Maven to Sonatype
+on:
+  push:
+    branches: [ master ]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: 'maven'
+      - name: Setup Sonatype Servers
+        uses: s4u/maven-settings-action@v2.6.0
+        with:
+          servers: |
+            [{
+              "id": "veracityMavenReleases",
+              "username": "${{ secrets.SONATYPE_USERNAME }}",
+              "password": "${{ secrets.SONATYPE_PASSWORD }}"
+            },
+            {
+              "id": "veracityMavenSnapshots",
+              "username": "${{ secrets.SONATYPE_USERNAME }}",
+              "password": "${{ secrets.SONATYPE_PASSWORD }}"
+            }]
+      - name: Publish Artifacts to Sonatype
+        run: |
+          ./publish.sh
