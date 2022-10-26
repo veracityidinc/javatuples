@@ -195,7 +195,9 @@ public abstract class Tuple implements Iterable<Object>, Serializable, Comparabl
     
     
     public final Object[] toArray() {
-        return this.valueArray.clone();
+        final Object[] result = new Object[this.valueArray.length];
+        System.arraycopy(this.valueArray, 0, result, 0, this.valueArray.length);
+        return result;
     }
     
     
